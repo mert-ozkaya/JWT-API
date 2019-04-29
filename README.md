@@ -3,4 +3,5 @@
 -JWT modulüyle authentication ve authorization kontrollerinin sağlandığı API
 
 ## How to run
+  npm install
   npm start  
