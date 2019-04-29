@@ -16,10 +16,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-//app.use(session({secret: "Your secret key"}));
-var privateKey = fs.readFileSync('./keys/private.key');
-var publicKey = fs.readFileSync('./keys/public.pem');
-
 
 app.use(function(req, res, next) {
   req.data = {};
