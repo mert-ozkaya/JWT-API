@@ -40,7 +40,9 @@ function passControl(req,res,next){
 
 function sendResponse(req, res) {
   res.json({
-    access_token: req.data.access_token
+    access_token: req.data.access_token,
+    status: true,
+    "username": req.data.user.username
   });
 
     req.cookies.access_token =  req.data.access_token;
