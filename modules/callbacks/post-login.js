@@ -3,6 +3,7 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const path = require("path");
 
+////////****************************************************************////////
 
 function findUser(req,res,next)
 {
@@ -12,38 +13,46 @@ function findUser(req,res,next)
   let p = collection.findOne(query);
   p.then(result => {
     if(result) {
-      req.user = {
-        id: result._id,
-        username: result.username,
-        password: result.password,
-        role: result.role
-
-      }
+      req.data.user = result;
       next();
     } else res.status(401).send('user_not_found');
   }).catch(err => {
     res.status(500).json(err);
   });
-
 }
 
+////////****************************************************************////////
+
 function passControl(req,res,next){
-  let p = bcrypt.compare(req.body.password, req.user.password);
+  console.log("passcontorl")
+  let p = bcrypt.compare(req.body.password, req.data.user.password);
   p.then(result => {
     if(result){
+        console.log("şifre doğru");
       next();
-    } else res.status(401).send('wrong_password');
+    } else res.status(401).send('yanlis sifre');
   }).catch(err => {
     res.status(500).json(err);
   });
 }
 
-function createToken(req,res,next){
+////////****************************************************************////////
 
-  let privateKey = fs.readFileSync(path.resolve(__dirname, "../../keys/private.key"))
-  let token = jwt.sign({ _id:req.user.id, username: req.user.username,role: req.user.role}, privateKey, { algorithm: 'RS256'})
-    res.end();
+function sendResponse(req, res) {
+  res.json({
+    access_token: req.data.access_token
+  });
+
+    req.cookies.access_token =  req.data.access_token;
 }
 
+////////****************************************************************////////
 
-module.exports = [findUser, passControl,createToken]
+
+
+module.exports = [
+  findUser,
+  passControl,
+  require('../middlewares/generate-access-token'),
+  sendResponse
+];

@@ -15,7 +15,8 @@ module.exports = function(req,res) {
 
        let newUser = {
            "username" : req.body.username,
-           "password" : req.body.password
+           "password" : req.body.password,
+           "role" : "User"
        }
 
        let collection = req.app.get('DB').collection('User');
@@ -23,8 +24,8 @@ module.exports = function(req,res) {
 
        p.then(function(result) {
          console.log("kayıt başarılı")
-         req.session.user = newUser;
-        res.send("kayit olundu");
+         res.sendStatus(200);
+        res.redirect('http://localhost:3050/login');
        }).catch(function(err) { // insertion error!
          console.log(err);
          res.sendStatus(500);
